@@ -26,6 +26,7 @@ public class MovableSpriteUniverse implements Universe {
 	player1 = tank;
 	sprites.add(tank);
 	sprites.add(tank.getTurret());
+	sprites.add(tank.getCrosshair());
 
 	
 }

@@ -11,7 +11,7 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
     private static Image[] rotatedImages = new Image[360];
     private Image rotatedImage;
     private double offsetAngle = 180;
-    private double ROTATION_SPEED = 120;    //degrees per second    
+    private double ROTATION_SPEED = 180;    //degrees per second    
     private double currentAngle = 0;
     private int currentImageAngle = 0;
 	private static Image image;	
@@ -19,7 +19,9 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 	
 	private double width = 50;
 	private double height = 50;
-	private boolean dispose = false;	
+	private boolean dispose = false;
+	private double centerX = 0;
+	private double centerY = 0;
 
 	private final double FORWARD = 2;
 	private final double DECELERATION = 1.5 * FORWARD;
@@ -53,7 +55,7 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 
     public Image getImage() {
         currentImageAngle = (int) ((currentAngle + offsetAngle)%360);
-        System.out.println(currentImageAngle);
+        
         return rotatedImages[currentImageAngle];
         
 		
@@ -105,11 +107,17 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 	public void setDispose(boolean dispose) {
 		this.dispose = dispose;
 	}
-
+	
+	public double getCurrentAngle(){
+		return this.currentImageAngle;
+	}
+	
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 		
-	    double angleInRadians = Math.toRadians(currentAngle);
+		this.currentAngle = this.tank.getCurrentAngle();
+	    double angleInRadians = Math.toRadians(this.currentAngle);
+	    
         
         if(keyboard.keyDown(37)) {
         	this.offsetAngle -= (ROTATION_SPEED * (actual_delta_time * 0.001));
@@ -135,15 +143,10 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
         
         currentAngle %= 360;
         offsetAngle %= 360;
-
-		//calculate new position based on velocity and time elapsed
-		this.centerX += actual_delta_time * 0.001 * this.velocity * Math.cos(angleInRadians);
-		this.centerY += actual_delta_time * 0.001 * this.velocity * Math.sin(angleInRadians);
 				
 	}
 
 
-    @Override
     public void setCenterX(double centerX) {
         // TODO Auto-generated method stub
         this.centerX = centerX;
@@ -151,21 +154,18 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
     }
 
 
-    @Override
     public void setCenterY(double centerY) {
         // TODO Auto-generated method stub
         this.centerY = centerY;
     }
 
 
-    @Override
     public void setVelocityX(double pixelsPerSecond) {
         // TODO Auto-generated method stub
         this.velocityX = pixelsPerSecond;
     }
 
 
-    @Override
     public void setVelocityY(double pixelsPerSecond) {
         // TODO Auto-generated method stub
         this.velocityY = pixelsPerSecond;

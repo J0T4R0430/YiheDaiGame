@@ -32,6 +32,7 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
 	private double velocityX = 0;
 	private double velocityY = 0;
 	private TankTurretSprite turret = null;
+	private Crosshair crosshair = null;
 	
 	public TankSprite() {
 		if (image == null) {
@@ -49,6 +50,7 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
         }
 		
 		turret = new TankTurretSprite(this);
+		crosshair = new Crosshair(turret);
 		
 		
 	}
@@ -113,6 +115,11 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
 	public void setDispose(boolean dispose) {
 		this.dispose = dispose;
 	}
+	
+	public double getCurrentAngle() {
+		return this.currentAngle;
+	}
+
 
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
@@ -162,7 +169,6 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
 	}
 
 
-    @Override
     public void setCenterX(double centerX) {
         // TODO Auto-generated method stub
         this.centerX = centerX;
@@ -170,24 +176,25 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
     }
 
 
-    @Override
     public void setCenterY(double centerY) {
         // TODO Auto-generated method stub
         this.centerY = centerY;
     }
 
 
-    @Override
     public void setVelocityX(double pixelsPerSecond) {
         // TODO Auto-generated method stub
         this.velocityX = pixelsPerSecond;
     }
 
 
-    @Override
     public void setVelocityY(double pixelsPerSecond) {
         // TODO Auto-generated method stub
         this.velocityY = pixelsPerSecond;
     }
+
+	public DisplayableSprite getCrosshair() {
+		return this.crosshair;
+	}
 
 }
