@@ -24,10 +24,6 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 	private double centerY = 0;
 
 	private final double FORWARD = 2;
-	private final double DECELERATION = 1.5 * FORWARD;
-    private final double MAX_VELOCITY = 200;
-    private final double BRAKE = 2.5 * FORWARD;
-    private final double BACKWARD = 1;
     private String filename = "res/tankhead.png";
     private double velocity = 0;
 	private double velocityX = 0;
