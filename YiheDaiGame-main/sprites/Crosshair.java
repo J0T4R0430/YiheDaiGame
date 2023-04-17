@@ -18,7 +18,8 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	private final double VELOCITY = 2;
 	private final int MAXRANGE = 200;
 	private final int MINRANGE = 36;
-	private double position = MINRANGE + 30;
+//	this minimum range is actually 28, so the bullet starts at 28 and go to position.
+	private double position = MINRANGE + 50;
 	private double velocityX = 0;
 	private double velocityY = 0;
 	private TankTurretSprite tank = null;
@@ -95,11 +96,11 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	}
 
 	public double getCenterX() {
-		return this.centerX;
+		return this.getMinX() + (this.getMaxX() - this.getMinX())/2;
 	}
 
 	public double getCenterY() {
-		return this.centerY;
+		return this.getMinY() + (this.getMaxY() - this.getMinY())/2;
 	}
 
 	public boolean getDispose() {
@@ -109,17 +110,28 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	public void setDispose(boolean dispose) {
 		this.dispose = dispose;		
 	}
+	
+	public double[] getTrajectory() {
+		double[] path = new double[3];
+		path[0] = 28;
+		path[1] = this.position;
+		path[2] = this.currentAngle;
+		return path;
+	}
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 		this.currentAngle = ((TankTurretSprite) this.tank).getCurrentAngle();
 		double angleInRadians = Math.toRadians(this.currentAngle);
-		System.out.println(currentAngle);
 		if(keyboard.keyDown(38) && position < MAXRANGE) {
 			this.position += VELOCITY;
 		}
 		if (keyboard.keyDown(40) && position > MINRANGE) {
 			this.position -= VELOCITY;
 		}
+		
+		System.out.println("maxX:" + this.getMaxX() + " minY:" + this.getMaxY());
+		System.out.println("minX:" + this.getMinX() + " minY:" + this.getMinY());
+		System.out.println("centerX:" + this.getCenterX() + " centerY:" + this.getCenterY());
 		
 		this.verticalDisplacement = Math.sin(angleInRadians) * this.position;
 		this.horizontalDisplacement = Math.cos(angleInRadians) * this.position;
