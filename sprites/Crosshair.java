@@ -24,7 +24,7 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	private TankTurretSprite tank = null;
 	private double horizontalDisplacement = 0;
 	private double verticalDisplacement = 0;
-	private double shooting = 100;
+	private double shooting = 500;
 	
 	
 	
@@ -110,16 +110,6 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	public void setDispose(boolean dispose) {
 		this.dispose = dispose;		
 	}
-	
-	public double[] getTrajectory() {
-		double[] path = new double[5];
-		path[0] = 28;
-		path[1] = this.position;
-		path[2] = this.currentAngle;
-		path[3] = this.tank.getCenterX();
-		path[4] = this.tank.getCenterY();
-		return path;
-	}
 
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 		this.currentAngle = ((TankTurretSprite) this.tank).getCurrentAngle();
@@ -131,13 +121,13 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 			this.position -= VELOCITY;
 		}
 		if (keyboard.keyDown(32) && shooting <=0) {
-		    shooting = 100;
-		    shoot(universe);
+		    shooting = 500;
+		    shoot(universe, keyboard);
 		}
 		
-		System.out.println("maxX:" + this.getMaxX() + " minY:" + this.getMaxY());
-		System.out.println("minX:" + this.getMinX() + " minY:" + this.getMinY());
-		System.out.println("centerX:" + this.getCenterX() + " centerY:" + this.getCenterY());
+//		System.out.println("maxX:" + this.getMaxX() + " minY:" + this.getMaxY());
+//		System.out.println("minX:" + this.getMinX() + " minY:" + this.getMinY());
+		
 		
 		this.verticalDisplacement = Math.sin(angleInRadians) * this.position;
 		this.horizontalDisplacement = Math.cos(angleInRadians) * this.position;
@@ -150,8 +140,26 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 
 	}
 	
-	public void shoot(Universe universe) {
-	    BulletSprite bullet = new BulletSprite(this.getTrajectory());
+	public void shoot(Universe universe, KeyboardInput keyboard) {
+		double shootingAngle = this.currentAngle;
+		if(keyboard.keyDown(37)) {
+			shootingAngle -= 25 * this.position / 200;
+		}else if (keyboard.keyDown(39)) {
+			shootingAngle += 25 * this.position / 200;
+		}
+		if(keyboard.keyDown(65)) {
+			shootingAngle -=10;
+		}else if(keyboard.keyDown(68)) {
+			shootingAngle +=10;
+		}	
+		
+		if (shootingAngle >= 360) {
+			shootingAngle -= 360;
+        }
+        if (shootingAngle < 0) {
+        	shootingAngle += 360;
+        }  
+	    BulletSprite bullet = new BulletSprite(this.tank.getCenterX(), this.tank.getCenterY(), this.position + 24, shootingAngle);
 	    universe.getSprites().add(bullet);
 	}
 

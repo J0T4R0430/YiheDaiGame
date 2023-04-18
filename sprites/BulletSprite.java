@@ -7,27 +7,29 @@ public class BulletSprite implements DisplayableSprite{
     private static Image image; 
     private double centerX = 0;
     private double centerY = 0;
-    private double width = 50;
-    private double height = 50;
+    private double width = 20;
+    private double height = 20;
     private boolean dispose = false;    
     private double velocityX = 0;
     private double velocityY = 0;
-    private int velocity = 20;
-    private double currentAngle = 0;
+    private int velocity = 12;
+    private double angle = 0;
     private static Image[] rotatedImages = new Image[360];
     private Image rotatedImage;
-    private String filename = "res/error.png";
-    private int startpos = 0;
-    private int endpos = 0;
-    private int currentpos = 0;
+    private String filename = "res/bullet.png";
+    private double startpos = 0;
+    private double endpos = 0;
+    private double currentpos = 0;
+    private int timer = 100;
     
-    public BulletSprite(double[] trajectory) {
-        this.currentAngle = trajectory[2];
-        this.startpos = (int) trajectory[0];
+    public BulletSprite(double centerX, double centerY, double position, double angle) {
+    	super();
+        this.angle = angle;
+        this.startpos = 28;
         this.currentpos = this.startpos;
-        this.endpos = (int) trajectory[1];
-        this.centerX = trajectory[3];
-        this.centerY = trajectory[4];
+        this.endpos = position;
+        this.centerX = centerX;
+        this.centerY = centerY;
         
         
         
@@ -47,88 +49,107 @@ public class BulletSprite implements DisplayableSprite{
         }
     }
 
-    @Override
+     
     public Image getImage() {
-        // TODO Auto-generated method stub
-        return rotatedImages[(int) currentAngle];
+    	if(timer < 100) {
+    		try {
+                image = ImageIO.read(new File(filename));
+            }
+            catch (IOException e) {
+                System.out.println(e.toString());
+            } 
+    		return image;
+    	}else {
+        return rotatedImages[(int) angle];
+    	}
     }
 
-    @Override
+     
     public boolean getVisible() {
-        // TODO Auto-generated method stub
+ 
         return true;
     }
 
-    @Override
+     
     public double getMinX() {
-        // TODO Auto-generated method stub
+ 
         return centerX - (width / 2);
     }
 
-    @Override
+     
     public double getMaxX() {
-        // TODO Auto-generated method stub
+ 
         return centerX - (width / 2);
     }
 
-    @Override
+     
     public double getMinY() {
-        // TODO Auto-generated method stub
+ 
         return centerY - (height / 2);
     }
 
-    @Override
+     
     public double getMaxY() {
-        // TODO Auto-generated method stub
+ 
         return centerY + (height / 2);
     }
 
-    @Override
+     
     public double getHeight() {
-        // TODO Auto-generated method stub
+ 
         return height;
     }
 
-    @Override
+     
     public double getWidth() {
-        // TODO Auto-generated method stub
+ 
         return width;
     }
 
-    @Override
+     
     public double getCenterX() {
-        // TODO Auto-generated method stub
+ 
         return centerX;
     }
 
-    @Override
+     
     public double getCenterY() {
-        // TODO Auto-generated method stub
+ 
         return centerY;
     }
 
-    @Override
+     
     public boolean getDispose() {
-        // TODO Auto-generated method stub
+ 
         return dispose;
     }
 
-    @Override
+     
     public void setDispose(boolean dispose) {
-        // TODO Auto-generated method stub
+ 
         this.dispose = dispose;
     }
 
-    @Override
+     
     public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
-        // TODO Auto-generated method stub
-        double angleInRadians = Math.toRadians(this.currentAngle);
+ 
+        double angleInRadians = Math.toRadians(this.angle);
         if(currentpos >= endpos) {
-            this.setDispose(true);
-        }
+        	this.filename = "res/explosion.png";
+            explode();
+        }else {
         currentpos += velocity;
-        this.centerX += this.velocity * Math.cos(angleInRadians)* 0.001 * this.velocity;
-        this.centerY += this.velocity * Math.sin(angleInRadians)* 0.001 * this.velocity;
+        System.out.println(currentpos + ' ' + endpos);
+        this.centerX -= this.velocity * Math.cos(angleInRadians);
+        this.centerY -= this.velocity * Math.sin(angleInRadians);
+        }
     }
     
+    public void explode() {
+    	timer -= 1;
+    	if (timer < 0) {
+    		this.dispose = true;
+    	}
+    	System.out.println(timer);
+    }
 }

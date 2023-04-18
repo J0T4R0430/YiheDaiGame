@@ -10,6 +10,7 @@ public class MovableSpriteUniverse implements Universe {
 	private String status = "";
 	private double velocityX = 0;
     private double velocityY = 0;
+    ArrayList<DisplayableSprite> disposedSprites = new ArrayList<DisplayableSprite>();
 
 	private final double VELOCITY = 2;	
 	
@@ -80,9 +81,27 @@ public class MovableSpriteUniverse implements Universe {
 			
 			sprite.update(this, keyboard, actual_delta_time);
     	}    	
+		disposeSprites();
 
 	}
 	
+	protected void disposeSprites() {
+        
+    	
+		for (int i = 0; i < sprites.size(); i++) {
+			DisplayableSprite sprite = sprites.get(i);
+    		if (sprite.getDispose() == true) {
+    			disposedSprites.add(sprite);
+    		}
+    	}
+		for (int i = 0; i < disposedSprites.size(); i++) {
+			DisplayableSprite sprite = disposedSprites.get(i);
+			sprites.remove(sprite);
+    	}
+    	if (disposedSprites.size() > 0) {
+    		disposedSprites.clear();
+    	}
+    }	
 	public String toString() {
 		return this.status;
 	}	

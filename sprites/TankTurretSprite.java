@@ -139,6 +139,7 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
         
         currentAngle %= 360;
         offsetAngle %= 360;
+//        System.out.println("centerX:" + this.tank.getCenterX() + " centerY:" + this.tank.getCenterY());
 				
 	}
 

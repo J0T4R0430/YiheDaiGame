@@ -100,11 +100,11 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
 	}
 
 	public double getCenterX() {
-		return width/2;
+		return this.centerX;
 	};
 
 	public double getCenterY() {
-		return height/2;
+		return this.centerY;
 	};
 	
 	
