@@ -16,11 +16,10 @@ public class BulletSprite implements DisplayableSprite{
     private double angle = 0;
     private static Image[] rotatedImages = new Image[360];
     private Image rotatedImage;
-    private String filename = "res/bullet.png";
     private double startpos = 0;
     private double endpos = 0;
     private double currentpos = 0;
-    private int timer = 100;
+    private double timer = 500;
     
     public BulletSprite(double centerX, double centerY, double position, double angle) {
     	super();
@@ -30,38 +29,20 @@ public class BulletSprite implements DisplayableSprite{
         this.endpos = position;
         this.centerX = centerX;
         this.centerY = centerY;
-        
-        
-        
-        
+                        
         
         try {
-            image = ImageIO.read(new File("res/bullet.png"));
+            this.image = ImageRotator.rotate(ImageIO.read(new File("res/bullet.png")),(int) angle);
         }
         catch (IOException e) {
             System.out.println(e.toString());
-        }       
-        
-        if (image != null) {
-            for (int i = 0; i < 360; i++) {
-                rotatedImages[i] = ImageRotator.rotate(image, i);           
-            }
-        }
+        }                
     }
 
      
     public Image getImage() {
-    	if(timer < 100) {
-    		try {
-                image = ImageIO.read(new File(filename));
-            }
-            catch (IOException e) {
-                System.out.println(e.toString());
-            } 
-    		return image;
-    	}else {
-        return rotatedImages[(int) angle];
-    	}
+        return this.image;
+
     }
 
      
@@ -134,25 +115,15 @@ public class BulletSprite implements DisplayableSprite{
     public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
  
         double angleInRadians = Math.toRadians(this.angle);
-        if(currentpos == endpos) {
-        	this.filename = "res/explosion.png";
-        	if(timer == 100) {
-        		this.centerX -= SPEED * Math.cos(angleInRadians);
-                this.centerY -= SPEED * Math.sin(angleInRadians);
-        	}
-            explode();
+        if(currentpos > endpos) {
+            if(timer == 0) {
+                this.dispose = true;
+            }
         }else {
         currentpos += Math.min(SPEED, endpos - currentpos);
-        System.out.println(currentpos + "    " + endpos);
         this.centerX -= Math.min(SPEED, endpos - currentpos) * Math.cos(angleInRadians);
         this.centerY -= Math.min(SPEED, endpos - currentpos) * Math.sin(angleInRadians);
         }
     }
-    
-    public void explode() {
-    	timer -= 1;
-    	if (timer < 0) {
-    		this.dispose = true;
-    	}
-    }
+
 }

@@ -19,7 +19,7 @@ public class ImageSprite implements DisplayableSprite {
 	private double maxX = 0;
 	private double maxY = 0;
 
-	private boolean dispose;
+	private boolean dispose = false;
 	
 	public ImageSprite(double minX, double minY, double maxX, double maxY, String imagePath) {
 

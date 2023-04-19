@@ -72,19 +72,24 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	}
 
 	public double getMinX() {
-		return this.tank.getMinX() - horizontalDisplacement + 15;
+//		return this.tank.getMinX() - horizontalDisplacement + 10;
+		return this.centerX - this.width / 2;
 	}
 
 	public double getMaxX() {
-		return this.tank.getMaxX() - horizontalDisplacement + 15;
+//		return this.tank.getMaxX() - horizontalDisplacement + 10;
+	    return this.centerX + this.width / 2;
 	}
 
 	public double getMinY() {
-		return this.tank.getMinY() - verticalDisplacement + 15;
+//		return this.tank.getMinY() - verticalDisplacement + 10;
+		return this.centerY - this.height / 2;
 	}
 
 	public double getMaxY() {
-		return this.tank.getMaxY() - verticalDisplacement + 15;
+//		return this.tank.getMaxY() - verticalDisplacement + 10;
+	    return this.centerY + this.height / 2;
+
 	}
 
 	public double getHeight() {
@@ -96,11 +101,11 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	}
 
 	public double getCenterX() {
-		return this.getMinX() + (this.getMaxX() - this.getMinX())/2;
+		return this.centerX;
 	}
 
 	public double getCenterY() {
-		return this.getMinY() + (this.getMaxY() - this.getMinY())/2;
+		return this.centerY;
 	}
 
 	public boolean getDispose() {
@@ -114,16 +119,18 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
 		this.currentAngle = ((TankTurretSprite) this.tank).getCurrentAngle();
 		double angleInRadians = Math.toRadians(this.currentAngle);
+		double deltapos = 0;
 		if(keyboard.keyDown(38) && position < MAXRANGE) {
-			this.position += VELOCITY;
+			deltapos = VELOCITY;
 		}
 		else if (keyboard.keyDown(40) && position > MINRANGE) {
-			this.position -= VELOCITY;
+			deltapos = -VELOCITY;
 		}
 		if (keyboard.keyDown(32) && shooting <=0) {
 		    shooting = 1500;
 		    shoot(universe, keyboard);
 		}
+		this.position += deltapos;
 		
 //		System.out.println("maxX:" + this.getMaxX() + " minY:" + this.getMaxY());
 //		System.out.println("minX:" + this.getMinX() + " minY:" + this.getMinY());
@@ -131,6 +138,8 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 		
 		this.verticalDisplacement = Math.sin(angleInRadians) * this.position;
 		this.horizontalDisplacement = Math.cos(angleInRadians) * this.position;
+		this.centerX = this.tank.getCenterX() - this.horizontalDisplacement;
+		this.centerY = this.tank.getCenterY() - this.verticalDisplacement;
 		shooting -= actual_delta_time;
 		
 		
@@ -142,24 +151,9 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	
 	public void shoot(Universe universe, KeyboardInput keyboard) {
 		double shootingAngle = this.currentAngle;
-//		if(keyboard.keyDown(37)) {
-//			shootingAngle -= 25 * this.position / 200;
-//		}else if (keyboard.keyDown(39)) {
-//			shootingAngle += 25 * this.position / 200;
-//		}
-//		if(keyboard.keyDown(65)) {
-//			shootingAngle -=10;
-//		}else if(keyboard.keyDown(68)) {
-//			shootingAngle +=10;
-//		}	
-//		
-//		if (shootingAngle >= 360) {
-//			shootingAngle -= 360;
-//        }
-//        if (shootingAngle < 0) {
-//        	shootingAngle += 360;
-//        }  
-	    BulletSprite bullet = new BulletSprite(this.tank.getCenterX(), this.tank.getCenterY(), this.position + 24, shootingAngle);
+
+	    BulletSprite bullet = new BulletSprite(this.tank.getCenterX(),
+	            this.tank.getCenterY(), this.position + 52, shootingAngle);
 	    universe.getSprites().add(bullet);
 	}
 
