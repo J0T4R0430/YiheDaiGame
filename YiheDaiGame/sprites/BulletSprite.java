@@ -4,7 +4,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BulletSprite implements DisplayableSprite{
-    private static Image image; 
+    private static Image image1 = null;
+    private static Image image2 = null;
     private double centerX = 0;
     private double centerY = 0;
     private double width = 40;
@@ -14,115 +15,139 @@ public class BulletSprite implements DisplayableSprite{
     private double velocityY = 0;
     private int SPEED = 24;
     private double angle = 0;
-    private static Image[] rotatedImages = new Image[360];
-    private Image rotatedImage;
     private double startpos = 0;
     private double endpos = 0;
     private double currentpos = 0;
     private double timer = 500;
-    
+    private boolean exploded = false;
+
     public BulletSprite(double centerX, double centerY, double position, double angle) {
-    	super();
+        super();
         this.angle = angle;
         this.startpos = 28;
         this.currentpos = this.startpos;
         this.endpos = position;
         this.centerX = centerX;
         this.centerY = centerY;
-                        
-        
+
+
         try {
-            this.image = ImageRotator.rotate(ImageIO.read(new File("res/bullet.png")),(int) angle);
+            if (image1 == null) {
+                image1 = ImageRotator.rotate(ImageIO.read(new File("res/bullet.png")),(int) angle);
+            }
         }
         catch (IOException e) {
             System.out.println(e.toString());
         }                
+
+        try {
+            if (image2 == null) {
+                image2 = ImageRotator.rotate(ImageIO.read(new File("res/explosion.png")),(int) angle);
+            }
+        }
+        catch (IOException e) {
+            System.out.println(e.toString());
+        }                
+
     }
 
-     
+
     public Image getImage() {
-        return this.image;
+        if (exploded) {
+            return this.image2;            
+        } else {
+            return this.image1;
+            
+        }
 
     }
 
-     
+
     public boolean getVisible() {
- 
+
         return true;
     }
 
-     
+
     public double getMinX() {
- 
+
         return centerX - (width / 2);
     }
 
-     
+
     public double getMaxX() {
- 
+
         return centerX - (width / 2);
     }
 
-     
+
     public double getMinY() {
- 
+
         return centerY - (height / 2);
     }
 
-     
+
     public double getMaxY() {
- 
+
         return centerY + (height / 2);
     }
 
-     
+
     public double getHeight() {
- 
+
         return height;
     }
 
-     
+
     public double getWidth() {
- 
+
         return width;
     }
 
-     
+
     public double getCenterX() {
- 
+
         return centerX;
     }
 
-     
+
     public double getCenterY() {
- 
+
         return centerY;
     }
 
-     
+
     public boolean getDispose() {
- 
+
         return dispose;
     }
 
-     
+
     public void setDispose(boolean dispose) {
- 
+
         this.dispose = dispose;
     }
 
-     
+
     public void update(Universe universe, KeyboardInput keyboard, long actual_delta_time) {
- 
+
         double angleInRadians = Math.toRadians(this.angle);
-        if(currentpos > endpos) {
+        if (exploded == false) {
+            if(currentpos == endpos) {
+                exploded = true;
+                
+
+            }else {
+                currentpos += Math.min(SPEED, endpos - currentpos);
+                this.centerX -= Math.min(SPEED, endpos - currentpos) * Math.cos(angleInRadians);
+                this.centerY -= Math.min(SPEED, endpos - currentpos) * Math.sin(angleInRadians);
+            }
+        }
+        else {
             if(timer == 0) {
                 this.dispose = true;
             }
-        }else {
-        currentpos += Math.min(SPEED, endpos - currentpos);
-        this.centerX -= Math.min(SPEED, endpos - currentpos) * Math.cos(angleInRadians);
-        this.centerY -= Math.min(SPEED, endpos - currentpos) * Math.sin(angleInRadians);
+            timer -= 1;            
         }
     }
 

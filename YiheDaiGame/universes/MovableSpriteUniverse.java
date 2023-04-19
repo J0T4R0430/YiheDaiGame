@@ -23,7 +23,9 @@ public class MovableSpriteUniverse implements Universe {
 		this.setXCenter(0);
 		this.setYCenter(0);
 		
-		ImageSprite background = new ImageSprite(-780, -384, 780, 384, "res/DesertMap.png");
+		ImageSprite background = new ImageSprite(
+		        -AnimationFrame.SCREEN_WIDTH/2, -AnimationFrame.SCREEN_HEIGHT/2,
+		        AnimationFrame.SCREEN_WIDTH/2, AnimationFrame.SCREEN_HEIGHT/2, "res/DesertMap.png");
 	
 		TankSprite tank =new TankSprite();
 		player1 = tank;

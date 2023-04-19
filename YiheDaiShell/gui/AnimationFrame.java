@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
@@ -12,9 +13,9 @@ import java.awt.event.MouseMotionAdapter;
 
 public class AnimationFrame extends JFrame {
 
-	final public static int FRAMES_PER_SECOND = 120;
-	final public static int SCREEN_HEIGHT = 768;
-	final public static int SCREEN_WIDTH = 1360;
+	final public static int FRAMES_PER_SECOND = 60;
+	public static int SCREEN_HEIGHT = 768;
+	public static int SCREEN_WIDTH = 1360;
 
 	private int screenCenterX = SCREEN_WIDTH / 2;
 	private int screenCenterY = SCREEN_HEIGHT / 2;
@@ -55,6 +56,9 @@ public class AnimationFrame extends JFrame {
 	public AnimationFrame(Animation animation)
 	{
 		super("");
+		
+		//detect the resolution of the sceen and set the WIDTH and HEIGHT
+		
 		getContentPane().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -292,18 +296,22 @@ public class AnimationFrame extends JFrame {
 			}
 
 			if (sprites != null) {
-				for (DisplayableSprite activeSprite : sprites) {
-					DisplayableSprite sprite = activeSprite;
-					if (sprite.getVisible()) {
-						if (sprite.getImage() != null) {
-							g.drawImage(sprite.getImage(), translateToScreenX(sprite.getMinX()), translateToScreenY(sprite.getMinY()), scaleLogicalX(sprite.getWidth()), scaleLogicalY(sprite.getHeight()), null);
-						}
-						else {
-							g.setColor(Color.BLUE);
-							g.fillRect(translateToScreenX(sprite.getMinX()), translateToScreenY(sprite.getMinY()), scaleLogicalX(sprite.getWidth()), scaleLogicalY(sprite.getHeight()));
-						}
-					}
-				}				
+				try {
+                    for (DisplayableSprite activeSprite : sprites) {
+                    	DisplayableSprite sprite = activeSprite;
+                    	if (sprite.getVisible()) {
+                    		if (sprite.getImage() != null) {
+                    			g.drawImage(sprite.getImage(), translateToScreenX(sprite.getMinX()), translateToScreenY(sprite.getMinY()), scaleLogicalX(sprite.getWidth()), scaleLogicalY(sprite.getHeight()), null);
+                    		}
+                    		else {
+                    			g.setColor(Color.BLUE);
+                    			g.fillRect(translateToScreenX(sprite.getMinX()), translateToScreenY(sprite.getMinY()), scaleLogicalX(sprite.getWidth()), scaleLogicalY(sprite.getHeight()));
+                    		}
+                    	}
+                    }
+                } catch (ConcurrentModificationException e) {
+                    //do nothing
+                }				
 			}
 		}
 		
