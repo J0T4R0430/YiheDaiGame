@@ -8,12 +8,12 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
 	
 	//a sprite that can be displayed and moves based on its own polling of the keyboard object
 
-    private static Image[] rotatedImages = new Image[360];
+    private Image[] rotatedImages = new Image[360];
     private Image rotatedImage;
     private double ROTATION_SPEED = 90;    //degrees per second    
     private double currentAngle = 0;
     private int currentImageAngle = 0;
-	private static Image image;	
+	private Image image;	
 	
 	
 	private double centerX = 0;
@@ -27,32 +27,44 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
     private final double MAX_VELOCITY = 125;
     private final double BRAKE = 2.5 * FORWARD;
     private final double BACKWARD = 1;
-    private String filename = "res/tankbody.png";
     private double velocity = 0;
 	private double velocityX = 0;
 	private double velocityY = 0;
 	private TankTurretSprite turret = null;
 	private Crosshair crosshair = null;
+	private int forward = 0;
+	private int backward = 0;
+	private int right = 0;
+	private int left = 0;
 	
-	public TankSprite() {
-		if (image == null) {
-			try {
-				image = ImageIO.read(new File(filename));
-			}
-			catch (IOException e) {
-				System.out.println(e.toString());
-			}		
-		}
-		if (image != null) {
-            for (int i = 0; i < 360; i++) {
-                rotatedImages[i] = ImageRotator.rotate(image, i);           
+	public TankSprite(int player) {
+	    if(player == 1) {
+	        this.centerX = -100;
+	        try {
+	            image = ImageIO.read(new File("res/Tank1Body.png"));
+	        }
+	        catch (IOException e) {
+	            System.out.println(e.toString());        
+	        }
+	        forward = 87; backward = 83; right = 68; left = 65;
+	    }else if(player == 2) {
+            this.centerX = +100;
+            try {
+                image = ImageIO.read(new File("res/Tank2Body.png"));
             }
+            catch (IOException e) {
+                System.out.println(e.toString());
+            }
+            forward = 38; backward = 40; right = 39; left = 37;
         }
-		
-		turret = new TankTurretSprite(this);
-		crosshair = new Crosshair(turret);
-		
-		
+	    
+	    for (int i = 0; i < 360; i++) {
+            rotatedImages[i] = ImageRotator.rotate(image, i);           
+        }
+
+		turret = new TankTurretSprite(this, player);
+		crosshair = new Crosshair(turret, player);
+
 	}
 	
 	public TankTurretSprite getTurret() {
@@ -126,17 +138,17 @@ public class TankSprite implements MovableSprite, DisplayableSprite {
 		
 	    double angleInRadians = Math.toRadians(currentAngle);
 	    //LEFT  
-        if (keyboard.keyDown(65)) {
+        if (keyboard.keyDown(left)) {
             currentAngle -= (ROTATION_SPEED * (actual_delta_time * 0.001));
         }
         // RIGHT
-        else if (keyboard.keyDown(68)) {
+        else if (keyboard.keyDown(right)) {
             currentAngle += (ROTATION_SPEED * (actual_delta_time * 0.001));
         }
-        if ((keyboard.keyDown(87)) && this.velocity < this.MAX_VELOCITY) {
+        if ((keyboard.keyDown(forward)) && this.velocity < this.MAX_VELOCITY) {
             this.velocity += FORWARD;
         }       // DOWN
-        else if ((keyboard.keyDown(83)) && this.velocity > - this.MAX_VELOCITY) {
+        else if ((keyboard.keyDown(backward)) && this.velocity > - this.MAX_VELOCITY) {
         	if (this.velocity > 0) {
         		this.velocity -= BRAKE;
         	} else {

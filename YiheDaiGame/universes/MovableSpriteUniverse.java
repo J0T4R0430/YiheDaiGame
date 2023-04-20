@@ -5,6 +5,7 @@ public class MovableSpriteUniverse implements Universe {
 	private boolean complete = false;	
 	private Background background = null;	
 	private DisplayableSprite player1 = null;
+	private DisplayableSprite player2 = null;
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private long elapsedTime = 0;
 	private String status = "";
@@ -26,13 +27,20 @@ public class MovableSpriteUniverse implements Universe {
 		ImageSprite background = new ImageSprite(
 		        -AnimationFrame.SCREEN_WIDTH/2, -AnimationFrame.SCREEN_HEIGHT/2,
 		        AnimationFrame.SCREEN_WIDTH/2, AnimationFrame.SCREEN_HEIGHT/2, "res/DesertMap.png");
-	
-		TankSprite tank =new TankSprite();
-		player1 = tank;
 		sprites.add(background);
-		sprites.add(tank);
-		sprites.add(tank.getTurret());
-		sprites.add(tank.getCrosshair());
+	
+		TankSprite tank1 =new TankSprite(1);
+		TankSprite tank2 = new TankSprite(2);
+		player1 = tank1;
+		player2 = tank2;
+		
+		sprites.add(tank1);
+		sprites.add(tank1.getTurret());
+		
+		sprites.add(tank2);
+		sprites.add(tank2.getTurret());
+		sprites.add(tank1.getCrosshair());
+		sprites.add(tank2.getCrosshair());
 
 	
 }
@@ -87,7 +95,6 @@ public class MovableSpriteUniverse implements Universe {
 			sprite.update(this, keyboard, actual_delta_time);
     	}    	
 		disposeSprites();
-
 	}
 	
 	protected void disposeSprites() {

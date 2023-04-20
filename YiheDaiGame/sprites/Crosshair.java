@@ -1,7 +1,7 @@
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Crosshair implements MovableSprite, DisplayableSprite{
@@ -25,11 +25,14 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 	private double horizontalDisplacement = 0;
 	private double verticalDisplacement = 0;
 	private double shooting = 500;
+	private int forward = 0;
+    private int backward = 0;
+    private int shoot = 0;
 	
 	
 	
 	
-	public Crosshair(TankTurretSprite turret) {
+	public Crosshair(TankTurretSprite turret, int player) {
 		this.tank = turret;
 		
 		if (image == null) {
@@ -40,6 +43,12 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
                 System.out.println(e.toString());
                 }
 		}
+		if(player == 1) {
+		    forward = 73; backward = 75; shoot = 32;
+		}else if (player == 2) {
+		    forward = 104; backward = 101; shoot = 96;
+		}
+		
 	}
 	
 	
@@ -120,13 +129,13 @@ public class Crosshair implements MovableSprite, DisplayableSprite{
 		this.currentAngle = ((TankTurretSprite) this.tank).getCurrentAngle();
 		double angleInRadians = Math.toRadians(this.currentAngle);
 		double deltapos = 0;
-		if(keyboard.keyDown(38) && position < MAXRANGE) {
+		if(keyboard.keyDown(forward) && position < MAXRANGE) {
 			deltapos = VELOCITY;
 		}
-		else if (keyboard.keyDown(40) && position > MINRANGE) {
+		else if (keyboard.keyDown(backward) && position > MINRANGE) {
 			deltapos = -VELOCITY;
 		}
-		if (keyboard.keyDown(32) && shooting <=0) {
+		if (keyboard.keyDown(shoot) && shooting <=0) {
 		    shooting = 1500;
 		    shoot(universe, keyboard);
 		}

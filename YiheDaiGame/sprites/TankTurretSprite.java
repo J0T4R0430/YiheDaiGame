@@ -8,13 +8,13 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 	
 	//a sprite that can be displayed and moves based on its own polling of the keyboard object
 
-    private static Image[] rotatedImages = new Image[360];
+    private Image[] rotatedImages = new Image[360];
     private Image rotatedImage;
     private double offsetAngle = 180;
     private double ROTATION_SPEED = 120;    //degrees per second    
     private double currentAngle = 0;
     private int currentImageAngle = 0;
-	private static Image image;	
+	private Image image;	
 	
 	
 	private double width = 50;
@@ -24,28 +24,39 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 	private double centerY = 0;
 
 	private final double FORWARD = 2;
-    private String filename = "res/tankhead.png";
     private double velocity = 0;
 	private double velocityX = 0;
 	private double velocityY = 0;
 	private TankSprite tank = null;
+    private int right = 0;
+    private int left = 0;
+ 
 	
 
-    public TankTurretSprite(TankSprite body) {
+    public TankTurretSprite(TankSprite body, int player) {
         this.tank = body;
 
-        if (image == null) {
+        if(player == 1) {
+            this.centerX = -100;
             try {
-                image = ImageIO.read(new File(filename));
+                image = ImageIO.read(new File("res/Tank1Turret.png"));
+            }
+            catch (IOException e) {
+                System.out.println(e.toString());        
+            }
+            right = 74; left = 76;
+        }else if(player == 2) {
+            this.centerX = +100;
+            try {
+                image = ImageIO.read(new File("res/Tank2Turret.png"));
             }
             catch (IOException e) {
                 System.out.println(e.toString());
-            }       
-        }
-        if (image != null) {
-            for (int i = 0; i < 360; i++) {
-                rotatedImages[i] = ImageRotator.rotate(image, i);           
             }
+            right = 100; left = 102;
+        }
+        for (int i = 0; i < 360; i++) {
+            rotatedImages[i] = ImageRotator.rotate(image, i);           
         }
     }
 
@@ -115,11 +126,11 @@ public class TankTurretSprite implements MovableSprite, DisplayableSprite {
 	    double angleInRadians = Math.toRadians(this.currentAngle);
 	    
         
-        if(keyboard.keyDown(37)) {
+        if(keyboard.keyDown(right)) {
         	this.offsetAngle -= (ROTATION_SPEED * (actual_delta_time * 0.001));
         }
         
-        else if(keyboard.keyDown(39)) {
+        else if(keyboard.keyDown(left)) {
         	this.offsetAngle += (ROTATION_SPEED * (actual_delta_time * 0.001));
         }
         
